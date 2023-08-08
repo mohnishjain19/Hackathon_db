@@ -176,8 +176,7 @@ const db_dialectOptions = {
     ssl: 'Amazon RDS'
 };
 
-const winston = require('winston');
-
+const logger = require('./logger');
 const sequelize = new sequelize_1.Sequelize(db_name,  
 db_username, 
 db_password, //password
@@ -185,7 +184,7 @@ db_password, //password
     host: db_host,
     dialect: db_dialect,
     port: db_port,
-    logging: winston.warn,
+    logging: logger.warn,
     dialectOptions: db_dialectOptions,
     pool: { idle: 30, max: 5, min: 1, acquire: 45 * 1000 },
 });
