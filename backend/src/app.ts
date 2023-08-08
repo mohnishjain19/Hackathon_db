@@ -13,6 +13,7 @@ const app = express()
 app.use(express.json())
 
 
+
 app.post("/user" , async (req : Request , res : Response) => {
     const {Name, Email, Role} = req.body; 
     const newUser = await sequelize.models.User.create({Name, Email, Role});
