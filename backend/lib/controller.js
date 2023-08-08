@@ -77,7 +77,7 @@ exports.userSpecificBooks = async (req, res, next) => {
         const UserId = req.query.id;
         
         //Find all the bookUserInstances where the user is present 
-        const bookUserInstances = await sequelize.models.BookUserInstance.findAll(
+        const bookUserInstances = await sequelize.models.BookUser.findAll(
             {
                 where: {
                     UserId: UserId
