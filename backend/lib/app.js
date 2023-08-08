@@ -102,6 +102,10 @@ router.route("/create").post(register);
 router.route("/delete").delete(deleteuser);
 router.route("/userbonds").get(userSpecificBooks);
 router.route("/settledtrade").get(settledTrades);
+router.route("/booktrade").get(tradesByBooks);
+router.route("/booktradeid").get(tradesByBooksid);
+router.route("/preMaturity").get(preMaturity);
+router.route("/postMaturity").get(postMaturiy);
 
 app.use("/api/v1", router);
 

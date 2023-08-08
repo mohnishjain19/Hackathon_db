@@ -183,3 +183,129 @@ exports.settledTrades = async (req, res, next) => {
         res.status(500).send("Internal Server Error");
     }
 }
+
+exports.tradesByBooks = async (req, res, next) => {
+    //Return all trades with their corresponding books, securities and counterparties 
+
+    try {
+        let trades = await sequelize.models.Trade.findAll({
+            include : [
+                {
+                    model : sequelize.models.Book,
+                },
+                {
+                    model : sequelize.models.CounterParty,
+                },
+                {
+                    model : sequelize.models.Security,
+                }
+            ]
+        });
+
+        res.json(trades);
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+    }
+
+
+}
+
+exports.preMaturity = async (req, res , next )=> {
+
+    try {
+        //Find trades with security maturity date <= 1 month after today 
+        //Trade is linked with security via foreign key SecurityId
+        //Security has maturity date
+
+        const trades = await sequelize.models.Trade.findAll({
+            include : [
+                {
+                    model : sequelize.models.Security,
+                    where : {
+                        MaturityDate : {
+                            [sequelize.Op.lte] : sequelize.literal('DATE_ADD(CURDATE(), INTERVAL 1 MONTH)'),
+                            [sequelize.Op.gte] : sequelize.literal('CURDATE()')
+                        }
+                    }
+                },
+                {
+                    model : sequelize.models.CounterParty,
+                },
+                {
+                    model : sequelize.models.Book,
+                }
+            ]
+        });
+        
+        res.json(trades);
+
+    }
+    catch(err) {
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+    }
+}
+
+exports.postMaturity = async (req, res ,next) => {
+    //Return Trades post maturity 
+    try {
+        //Maturity Date <= Current Date
+        const trades = await sequelize.models.Trade.findAll({
+            include : [
+                {
+                    model : sequelize.models.Security,
+                    where : {
+                        MaturityDate : {
+                            [sequelize.Op.lte] : sequelize.literal('CURDATE()')
+                        }
+                    }
+                }, 
+                {
+                    model : sequelize.models.CounterParty,
+                },
+                {
+                    model : sequelize.models.Book,
+                }
+            ]
+        });
+
+        res.json(trades);
+    }
+    catch(err){
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+
+    }
+}
+
+// display trade from specific book_id
+exports.tradesByBooksid = async (req, res, next) => {
+
+    try {
+        const bookId = req.body.bookid;
+        const trades = await sequelize.models.Trade.findAll({
+            include : [
+                {
+                    model : sequelize.models.Book,
+                    where : {
+                        id : bookId
+                    }
+                }, {
+                    model : sequelize.models.CounterParty,
+                },
+                {
+                    model : sequelize.models.Security,
+                }
+            ]
+        });
+
+        res.json(trades);
+    }
+    catch {
+        console.log(error);
+        res.status(500).send("Internal Server Error");
+    }
+
+}
