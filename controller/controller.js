@@ -196,6 +196,44 @@ exports.tradesByBooks = async (req, res, next) => {
     }
 }
 
+//Pre Maturity 
+exports.preMaturity = async (req, res, next) => {
+    try {
+        let sql = `SELECT trade.*, maturitydate 
+                   FROM trade 
+                   JOIN security ON trade.securityid = security.id 
+                   WHERE MONTH(security.maturitydate) > 7 AND 
+                         MONTH(security.maturitydate) < 10 AND 
+                         security.maturitydate > CURRENT_DATE`;
+        
+        connection.query(sql, function(err, results) {
+            if (err) throw err;
+            res.send(results);
+        });
+    } catch (err) {
+        if (err) console.log(err);
+    }
+}
+
+
+// post maturity date trades (the ones which have bonds that have already matured)
+exports.postMaturiy = async (req, res, next) => {
+    try {
+        let sql = `select trade.*, maturitydate 
+                from trade join security 
+                on trade.securityid=security.id 
+                where security.maturitydate<CURRENT_DATE and 
+                settlementdate is NULL;`;
+            connection.query(sql,function(err,results){
+                if(err)throw err;
+                res.send(results);
+            })
+        
+    }catch (err) {
+        if (err) console.log(err);
+    }
+}
+
 
 // display trade from specific book_id
 exports.tradesByBooksid = async (req, res, next) => {

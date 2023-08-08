@@ -1,6 +1,6 @@
 const express=require("express");
 const  router = express.Router()
-const { allusers,allbooks,allmanagers ,register,deleteuser,userSpecificBooks,settledTrades,tradesByBooks,tradesByBooksid} = require("../controller/controller");
+const { allusers,allbooks,allmanagers ,register,deleteuser,userSpecificBooks,settledTrades,tradesByBooks,tradesByBooksid, preMaturity, postMaturiy} = require("../controller/controller");
 
 
 //Fetching Al users
@@ -29,6 +29,13 @@ router.route("/booktrade").get(tradesByBooks);
 
 // display trade from specific book_id
 router.route("/booktradeid").get(tradesByBooksid);
+
+// Pre Maturity Trade
+router.route("/preMaturity").get(preMaturity);
+
+
+// Post Maturity Dates
+router.route("/postMaturity").get(postMaturiy);
 
 
 
