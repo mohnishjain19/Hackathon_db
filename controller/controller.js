@@ -73,7 +73,7 @@ exports.userSpecificBooks = async (req, res, next) => {
         const userid = req.body.userid; // Corrected variable name
         
         // Using placeholders in the SQL query to prevent SQL injection
-        const sql = "SELECT Book.BookName FROM bookuser JOIN Book ON Book.Id = BookUser.BookId WHERE UserId = ?";
+        const sql = "SELECT Book.BookName,Book.Id FROM bookuser JOIN Book ON Book.Id = BookUser.BookId WHERE UserId = ?";
         connection.query(sql, [userid], function(err, results) {
             if (err) {
                 console.log(err);
@@ -118,6 +118,96 @@ exports.deleteuser = async (req, res, next) => {
         return res.status(500).json({ error: 'Server error' });
     }
 };
+
+
+// See all settled trades
+exports.settledTrades = async (req, res, next) => {
+    try {
+        let sql = `SELECT
+                t.Id AS TradeId,
+                b.BookName,
+                c.Name AS CounterpartyName,
+                s.ISIN,
+                s.CUSIP,
+                s.Issuer,
+                t.Quantity,
+                t.Status,
+                t.Price,
+                t.Buy_Sell,
+                t.TradeDate,
+                t.SettlementDate
+            FROM
+                Trade t
+            JOIN
+                Book b ON t.BookId = b.Id
+            JOIN
+                Counterparty c ON t.CounterpartyId = c.Id
+            JOIN
+                Security s ON t.SecurityId = s.Id
+            WHERE
+                t.Status = 'Completed'
+            ORDER BY
+                t.TradeDate;
+            `;
+            connection.query(sql,function(err,results){
+                if(err)throw err;
+                res.send(results);
+            })
+        
+    }catch (err) {
+        if (err) console.log(err);
+    }
+}
+
+
+
+// Display trades for every book
+exports.tradesByBooks = async (req, res, next) => {
+    try {
+            let sql = `SELECT
+            b.BookName,
+            t.Id AS TradeId,
+            c.Name AS CounterpartyName,
+            s.ISIN,
+            t.Quantity,
+            t.Status,
+            t.Price,
+            t.Buy_Sell,
+            t.TradeDate,
+            t.SettlementDate
+        FROM
+            Trade t
+        JOIN
+            Book b ON t.BookId = b.Id
+        JOIN
+            Counterparty c ON t.CounterpartyId = c.Id
+        JOIN
+            Security s ON t.SecurityId = s.Id
+        ORDER BY
+            b.BookName,
+            t.TradeDate;        
+            `
+            connection.query(sql,function(err,results){
+                if(err)throw err;
+                res.send(results);
+            })
+    } catch(error) {
+        console.log(error);
+    }
+}
+
+
+// display trade from specific book_id
+exports.tradesByBooksid=async(req,res,next)=>{
+    try
+    {
+
+    }
+    catch(error)
+    {
+        if (err) console.log(err);
+    }
+}
 
 
 
