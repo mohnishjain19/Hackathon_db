@@ -308,3 +308,57 @@ exports.tradesByBooksid = async (req, res, next) => {
     }
 
 }
+
+exports.redFlags = async (req, res, next) => {
+
+    try{
+        //Existing trades where either the settlement date is null and maturity date has passed 
+        //Or the settlement date has passed 
+        //Note settlement date is in trades, 
+        //While maturity date is in securities
+        //Both are separate tables joined by foreign key Trade.SecurityId = Security.id
+
+        const trades = await sequelize.models.Trade.findAll({
+            include : [
+                {
+                    model : sequelize.models.CounterParty,
+                },
+                {
+                    model : sequelize.models.Security,
+                },
+                {
+                    model : sequelize.models.Book,
+                }
+            ], 
+            where : {
+                [Op.or] : [{
+                    [Op.and] : [{
+                        SettlementDate : null
+                    }, {
+                        //Maturity Date 
+                        '$Security.MaturityDate$' : {
+                            [Op.lte] : sequelize.literal('CURDATE()')
+                        }
+                    
+                    }]
+                },
+                {
+                    SettlementDate : {
+                        [Op.lte] : sequelize.literal('CURDATE()')
+                    }
+                }]
+            }
+
+        });
+
+        res.json(trades);
+
+    }
+    
+    catch (err){
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+
+    }
+
+}
