@@ -1,4 +1,5 @@
 import {Sequelize, DataTypes} from 'sequelize';
+import { v4 as uuidv4 } from 'uuid';
 
 
 
@@ -36,8 +37,13 @@ const User = {
     Role : {
         type : DataTypes.ENUM('Manager', 'User'),
         allowNull: false
+    },
+    Token : {
+        //Autogenerate during registration
+        type: DataTypes.STRING,
+        unique: true,
+        defaultValue: () => uuidv4().toString()
     }
-    
 }
 
 const BookUser = {
@@ -166,12 +172,12 @@ const Trade = {
 }
 
 const sequelize = new Sequelize(
-   'hackathon',
-   'aniruddh',
-   'polo-sheath-battery-golf-prudishly-bruising-cheek',
-    {
-      host: 'localhost',
-      dialect: 'mysql'
+   'testdb', //database name 
+   'aniruddh', //username
+   'polo-sheath-battery-golf-prudishly-bruising-cheek', //password
+    { 
+      host: 'localhost', //database host
+      dialect: 'mysql' //database dialect
     }
   );
 
@@ -188,12 +194,28 @@ sequelize.define('CounterParty', CounterParty);
 sequelize.define('Security', Security);
 sequelize.define('Trade', Trade);
 
+//Create the tables if they don't exist
+sequelize.sync().catch((error) => {
+    console.log("Error syncing database: ", error);
+});
+
+
 //Define foreign key relationships
 sequelize.models.Book.belongsToMany(sequelize.models.User, {through: 'BookUser'});
 sequelize.models.User.belongsToMany(sequelize.models.Book, {through: 'BookUser'});
 sequelize.models.Trade.belongsTo(sequelize.models.Book);
 sequelize.models.Trade.belongsTo(sequelize.models.CounterParty);
 sequelize.models.Trade.belongsTo(sequelize.models.Security);
+
+
+//Sync the models with the database
+sequelize.sync({alter: true}).then(() => {
+    console.log("Database Synced");
+}).catch((error) => {
+    console.log("Error syncing database: ", error);
+});
+
+//Create user with g
 
 
 export default sequelize;
