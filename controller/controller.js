@@ -198,16 +198,49 @@ exports.tradesByBooks = async (req, res, next) => {
 
 
 // display trade from specific book_id
-exports.tradesByBooksid=async(req,res,next)=>{
-    try
-    {
+exports.tradesByBooksid = async (req, res, next) => {
+    try {
+        let bookId = req.query.id;
+        console.log("req.query.bookId: ",req.query.id);
+        let sql = `
+            SELECT
+                b.Id AS BookId,
+                b.BookName,
+                t.Id AS TradeId,
+                c.Name AS CounterpartyName,
+                s.ISIN,
+                s.CUSIP,
+                s.Issuer,
+                t.Quantity,
+                t.Status,
+                t.Price,
+                t.Buy_Sell,
+                t.TradeDate,
+                t.SettlementDate
+            FROM
+                Trade t
+            JOIN
+                Book b ON t.BookId = b.Id
+            JOIN
+                Counterparty c ON t.CounterpartyId = c.Id
+            JOIN
+                Security s ON t.SecurityId = s.Id
+            WHERE
+                t.BookId = ?
+            ORDER BY
+                b.BookName,
+                t.TradeDate;        
+        `;
 
+        connection.query(sql, [bookId], function(err, results) {
+            if (err) throw err;
+            res.send(results);
+        });
+    } catch (error) {
+        console.log(error);
     }
-    catch(error)
-    {
-        if (err) console.log(err);
-    }
-}
+};
+
 
 
 
