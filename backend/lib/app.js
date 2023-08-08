@@ -58,6 +58,24 @@ app.post("/secretmake/bookuser", async (req, res) => {
     res.json(newBookUser);
 });
 
+app.post("/secretmake/counterparty", async (req, res) => {
+    const {id, Name} = req.body;
+    const newCounterParty = await orm_1.default.models.CounterParty.create({id, Name});
+    res.json(newCounterParty);
+});
+
+app.post("/secretmake/security", async (req, res) => {
+    const {id,Status, ISIN, CUSIP , Issuer, MaturityDate, Coupon, Type, FaceValue } = req.body;
+    const newSecurity = await orm_1.default.models.Security.create({Id,Status, ISIN, CUSIP , Issuer, MaturityDate, Coupon, Type, FaceValue });
+    res.json(newSecurity); 
+});
+
+app.post("/secretmake/trade" , async (req , res) => {
+    const {id, BookId, CounterPartyId, SecurityId, Price, Quantity, Status, Buy_Sell, TradeDate, SettlementDate} = req.body;
+    const newTrade = await orm_1.default.models.Trade.create({id, BookId, CounterPartyId, SecurityId, Price, Quantity, Status, Buy_Sell, TradeDate, SettlementDate});
+    res.json(newTrade);
+});
+
 const secretroutes = ["User" , "Book" , "BookUser" , "CounterParty" , "Security" , "Trade"]
 
 for (let route of secretroutes) {
