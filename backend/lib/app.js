@@ -52,6 +52,12 @@ app.post("/secretmake/book", async (req, res) => {
     res.json(newBook);
 });
 
+app.post("/secretmake/bookuser", async (req, res) => {
+    const {BookId, UserId} = req.body;
+    const newBookUser = await orm_1.default.models.BookUser.create({BookId, UserId});
+    res.json(newBookUser);
+});
+
 const secretroutes = ["User" , "Book" , "BookUser" , "CounterParty" , "Security" , "Trade"]
 
 for (let route of secretroutes) {
