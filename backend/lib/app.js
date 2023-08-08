@@ -49,7 +49,7 @@ app.post("/user", async (req, res) => {
 const secretroutes = ["User" , "Book" , "BookUser" , "CounterParty" , "Security" , "Trade"]
 
 for (let route of secretroutes) {
-    let r = `/${route.toLowerCase()}s`;
+    let r = `/secret/${route.toLowerCase()}s`;
     app.get(r , async (req , res) => {
         let data = await orm_1.default.models[route].findAll();
         res.json(data);
