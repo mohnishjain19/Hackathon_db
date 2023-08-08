@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const orm_1 = require("./orm");
 const path_1 = require("path");
+const html_tablify = require("html-tablify");
 // create and setup express app
 const app = express();
 //JSON stuff
@@ -45,16 +46,16 @@ app.post("/user", async (req, res) => {
     res.json(newUser);
 });
 
-app.get("/users", async (req, res) => {
-    const users = await orm_1.default.models.User.findAll();
-    
-    //Send text
+const secretroutes = ["User" , "Book" , "BookUser" , "CounterParty" , "Security" , "Trade"]
 
+for (let route of secretroutes) {
+    let r = `/${route.toLowerCase()}s`;
+    app.get(r , async (req , res) => {
+        let data = await orm_1.default.models[route].findAll();
+        res.json(data);
+    });
+}
 
-    res.json(users);
-
-    // res.send("Request Working!!");
-});
 
 app.get("/", async (_req, res) => {
     //Render ../public/homepage.html
