@@ -86,10 +86,6 @@ for (let route of secretroutes) {
 const dotenv = require("dotenv");
 dotenv.config({path : path_1.resolve("../.env")});
 
-const port = process.env.PORT || 8000;
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-});
 
 const authorizationMiddleware = require("./auth");
 const router = express.Router();
@@ -101,11 +97,17 @@ const {
 
 const manager_only = authorizationMiddleware.authorizeRoles(["Manager"]);
 
-router.route("/users").get( manager_only, allusers);
-router.route("/managers").get(manager_only , allmanagers);
-router.route("/books").get(manager_only , allbooks);
+router.route("/users").get(allusers);
+router.route("/managers").get(allmanagers);
+router.route("/books").get(allbooks);
 router.route("/create").post(register);
 router.route("/delete").delete(deleteuser);
 router.route("/userbonds").get(userSpecificBooks);
 
 app.use("/api/v1", router);
+
+
+const port = process.env.PORT || 8000;
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
