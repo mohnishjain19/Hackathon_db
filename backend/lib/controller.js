@@ -17,7 +17,7 @@ exports.allusers = async (req, res, next) => {
 
     }
     catch(err){
-        console.error(err);
+        console.error(err , err.stack);
         res.status(500).send("Internal Server Error");
     }
 }
@@ -35,7 +35,7 @@ exports.allmanagers = async (req, res, next) => {
 
     }
     catch(err){
-        console.error(err);
+        console.error(err , err.stack);
         res.status(500).send("Internal Server Error");
     }
 }
@@ -64,7 +64,7 @@ exports.register = async (req, res, next) => {
     }
 
     catch(err){
-        console.error(err);
+        console.error(err , err.stack);
         res.status(500).send("Internal Server Error");
     }
 
@@ -96,7 +96,7 @@ exports.userSpecificBooks = async (req, res, next) => {
         res.json(bookNames);
     }
     catch(err){
-        console.error(err);
+        console.error(err , err.stack);
         res.status(500).send("Internal Server Error");
     }
 }
@@ -137,7 +137,7 @@ exports.deleteuser = async ( req, res, next ) => {
     }
 
     catch(err) {
-        console.error(err);
+        console.error(err , err.stack);
         res.status(500).send("Internal Server Error");
     }
 }
@@ -150,7 +150,7 @@ exports.allbooks = async (req, res, next ) => {
         res.json(books);
     }
     catch(err){
-        console.error(err);
+        console.error(err , err.stack);
         res.status(500).send("Internal Server Error");
     }
 }
@@ -179,7 +179,7 @@ exports.settledTrades = async (req, res, next) => {
     }
 
     catch(err){
-        console.error(err);
+        console.error(err , err.stack);
         res.status(500).send("Internal Server Error");
     }
 }
@@ -205,7 +205,7 @@ exports.tradesByBooks = async (req, res, next) => {
         res.json(trades);
     }
     catch (err) {
-        console.error(err);
+        console.error(err , err.stack);
         res.status(500).send("Internal Server Error");
     }
 
@@ -242,7 +242,7 @@ exports.preMaturity = async (req, res , next ) => {
 
     }
     catch(err) {
-        console.error(err);
+        console.error(err , err.stack);
         res.status(500).send("Internal Server Error");
     }
 }
@@ -273,7 +273,7 @@ exports.postMaturity = async (req, res ,next) => {
         res.json(trades);
     }
     catch(err){
-        console.error(err);
+        console.error(err , err.stack);
         res.status(500).send("Internal Server Error");
 
     }
@@ -309,54 +309,150 @@ exports.tradesByBooksid = async (req, res, next) => {
 
 }
 
+async function accountingFlags(){
+
+    //For 
+    const trades = await sequelize.models.Trade.findAll({
+    include : [
+        {
+            model : sequelize.models.CounterParty,
+        },
+        {
+            model : sequelize.models.Security,
+        },
+        {
+            model : sequelize.models.Book,
+        }
+    ],
+    where : {
+        [Op.or] : [{
+            [Op.and] : [{
+                SettlementDate : null
+            }, {
+                //Maturity Date
+                '$Security.MaturityDate$' : {
+                    [Op.lte] : sequelize.literal('CURDATE()')
+                }
+
+            }]
+        },
+        {
+            SettlementDate : {
+                [Op.lte] : sequelize.literal('CURDATE()')
+            }
+        }]
+    }
+
+    });
+
+    return trades; 
+}
+
+async function complianceFlags(){
+
+    //For maturity date > settlement date 
+    //These are compliance flags, which mean the bond is incorrect 
+    //And needs to be corrected 
+
+    const trades = await sequelize.models.Trade.findAll({
+        include : [
+            {
+                model : sequelize.models.CounterParty,
+            },
+            {
+                model : sequelize.models.Security,
+            },
+            {
+                model : sequelize.models.Book,
+            }
+        ],
+
+        where : {
+            SettlementDate : {
+                [Op.lt] : sequelize.col('Security.MaturityDate')
+            }
+        }
+
+    });
+
+    return trades;
+}
+
+exports.accountingFlags = async (req, res, next) => {
+    try {
+        const trades = await accountingFlags();
+        res.json(trades);
+    }
+    catch (err) {
+        console.error(err , err.stack);
+        res.status(500).send("Internal Server Error");
+    }
+}
+
+exports.complianceFlags = async (req, res, next) =>{
+    try {
+        const trades = await complianceFlags();
+        res.json(trades);
+    }
+    catch (err){
+        console.error(err , err.stack);
+        res.status(500).send("Internal Server Error");
+    }
+}
+
 exports.redFlags = async (req, res, next) => {
 
     try{
-        //Existing trades where either the settlement date is null and maturity date has passed 
-        //Or the settlement date has passed 
-        //Note settlement date is in trades, 
+        //Existing trades where either the settlement date is null and maturity date has passed
+        //Or the settlement date has passed
+        //Note settlement date is in trades,
         //While maturity date is in securities
         //Both are separate tables joined by foreign key Trade.SecurityId = Security.id
 
-        const trades = await sequelize.models.Trade.findAll({
-            include : [
-                {
-                    model : sequelize.models.CounterParty,
-                },
-                {
-                    model : sequelize.models.Security,
-                },
-                {
-                    model : sequelize.models.Book,
-                }
-            ], 
-            where : {
-                [Op.or] : [{
-                    [Op.and] : [{
-                        SettlementDate : null
-                    }, {
-                        //Maturity Date 
-                        '$Security.MaturityDate$' : {
-                            [Op.lte] : sequelize.literal('CURDATE()')
-                        }
-                    
-                    }]
-                },
-                {
-                    SettlementDate : {
-                        [Op.lte] : sequelize.literal('CURDATE()')
-                    }
-                }]
-            }
+        let bookid = req.body.bookid;
 
+        let complianceFlags = await complianceFlags();
+        let accountingFlags = await accountingFlags();
+
+        //Check for instances in accounting flags that have occured in complianceFlags and filter them out 
+        const complianceIds = complianceFlags.map((x) => x.id);
+        accountingFlags = accountingFlags.filter((x) => !complianceIds.includes(x.id));
+
+        //Combine both arrays with an additional field flag_type 
+        //Flag type is either accounting or compliance
+        complianceFlags = complianceFlags.map((x) => {
+            return {
+                ...x.dataValues,
+                flag_type : "compliance"
+            }
         });
+
+        accountingFlags = accountingFlags.map((x) => {
+            return {
+                ...x.dataValues,
+                flag_type : "accounting"
+            }
+        });
+
+        let trades = complianceFlags.concat(accountingFlags);
+
+        if (bookid == null || bookid == undefined || bookid == "" ) {
+        }
+        //Check for bookid being an array 
+        else if (Array.isArray(bookid)) {
+            trades = trades.filter(trade => bookid.includes(trade.Book.id));
+        }
+        //Else single number 
+        else if (typeof bookid === "number") {
+            trades = trades.filter(trade => trade.Book.id == bookid);
+        }
 
         res.json(trades);
 
     }
-    
+
     catch (err){
-        console.error(err);
+        console.error(err , err.stack);
         res.status(500).send("Internal Server Error");
 
     }
