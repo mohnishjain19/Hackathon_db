@@ -58,7 +58,7 @@ exports.register = async (req, res, next) => {
         const user = await sequelize.models.User.create({
             Name,
             Email,
-            role: Role
+            Role
         });
         res.json(user);
     }
