@@ -71,7 +71,7 @@ exports.register = async (req, res, next) => {
 }
 
 exports.userSpecificBooks = async (req, res, next) => {
-    const UserId = req.body.userid;
+    const UserId = req.query.id;
     try {
         const user = await sequelize.models.User.findByPk(UserId);
         if (!user) {
@@ -283,7 +283,7 @@ exports.postMaturity = async (req, res ,next) => {
 exports.tradesByBooksid = async (req, res, next) => {
 
     try {
-        const bookId = req.body.bookid;
+        const bookId = req.query.id;
         const trades = await sequelize.models.Trade.findAll({
             include : [
                 {
@@ -302,8 +302,8 @@ exports.tradesByBooksid = async (req, res, next) => {
 
         res.json(trades);
     }
-    catch {
-        console.log(error);
+    catch (error){
+        console.error(error, error.stack);
         res.status(500).send("Internal Server Error");
     }
 
