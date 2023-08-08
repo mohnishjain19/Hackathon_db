@@ -155,9 +155,15 @@ exports.settledTrades = async (req, res, next) => {
                 Status : "Completed"
             },
             include : [
-                sequelize.models.Book,
-                sequelize.models.Counterparty,
-                sequelize.models.Security
+                {
+                    model : sequelize.models.Book,
+                },
+                {
+                    model : sequelize.models.CounterParty,
+                },
+                {
+                    model : sequelize.models.Security,
+                }
             ]
         });
 
