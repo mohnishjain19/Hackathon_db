@@ -1,5 +1,6 @@
 const orm = require("./orm");
 const authorizer = require("./auth");
+const { QueryTypes } = require('sequelize');
 
 const sequelize = orm.default; 
 
