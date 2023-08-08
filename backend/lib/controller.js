@@ -100,13 +100,13 @@ exports.userSpecificBooks = async (req, res, next) => {
 
 exports.deleteuser = async ( req, res, next ) => {
 
-    const Email = req.body.Email;
+    const EMail = req.body.EMail;
     
     try {
 
         const user = await sequelize.models.User.findOne({
             where: {
-                Email : Email
+                Email : EMail
             }
         });
 
@@ -118,7 +118,7 @@ exports.deleteuser = async ( req, res, next ) => {
 
         await sequelize.models.User.destroy({
             where: {
-                Email : Email
+                Email : EMail
             }
         });
 
