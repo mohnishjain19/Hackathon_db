@@ -76,22 +76,24 @@ exports.userSpecificBooks = async (req, res, next) => {
     try {
         const UserId = req.query.id;
         
-        //Find all books of the user 
-        const bookuserInstances = await sequelize.models.BookUser.findAll(
+        //Find all the bookUserInstances where the user is present 
+        const bookUserInstances = await sequelize.models.BookUserInstance.findAll(
             {
                 where: {
-                    UserId
-                },
-                include : {
-                    model : sequelize.models.Book
+                    UserId: UserId
                 }
         });
-    
 
-        const bookNames = bookuserInstances.map( (bookuserInstance) => {
-            return bookuserInstance.Book.BookName;
+        const bookIds = bookUserInstances.map(x => x.BookId);
+        const books = await sequelize.models.Book.findAll({
+            where: {
+                id: {
+                    [Op.in]: bookIds
+                }
+            }
         });
 
+        const bookNames = books.map(x => x.BookName);
         res.json(bookNames);
     }
     catch(err){
