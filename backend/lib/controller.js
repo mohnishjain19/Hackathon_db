@@ -1,6 +1,6 @@
 const orm = require("./orm");
 const authorizer = require("./auth");
-const { QueryTypes } = require('sequelize');
+const { QueryTypes , Op } = require('sequelize');
 
 const sequelize = orm.default; 
 
@@ -224,8 +224,8 @@ exports.preMaturity = async (req, res , next ) => {
                     model : sequelize.models.Security,
                     where : {
                         MaturityDate : {
-                            [sequelize.Op.lte] : sequelize.literal('DATE_ADD(CURDATE(), INTERVAL 1 MONTH)'),
-                            [sequelize.Op.gte] : sequelize.literal('CURDATE()')
+                            [Op.lte] : sequelize.literal('DATE_ADD(CURDATE(), INTERVAL 1 MONTH)'),
+                            [Op.gte] : sequelize.literal('CURDATE()')
                         }
                     }
                 },
@@ -257,7 +257,7 @@ exports.postMaturity = async (req, res ,next) => {
                     model : sequelize.models.Security,
                     where : {
                         MaturityDate : {
-                            [sequelize.Op.lte] : sequelize.literal('CURDATE()')
+                            [Op.lte] : sequelize.literal('CURDATE()')
                         }
                     }
                 }, 
