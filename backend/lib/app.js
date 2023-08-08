@@ -96,7 +96,7 @@ const {
 
 const manager_only = authorizationMiddleware.authorizeRoles(["Manager"]);
 
-router.route("/users").get(manager_only, allusers);
+router.route("/users").get(allusers);
 router.route("/managers").get(allmanagers);
 router.route("/books").get(allbooks);
 router.route("/create").post(register);
