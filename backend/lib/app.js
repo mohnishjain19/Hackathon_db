@@ -45,6 +45,17 @@ app.post("/user", async (req, res) => {
     res.json(newUser);
 });
 
+app.get("/users", async (req, res) => {
+    // const users = await orm_1.default.models.User.findAll();
+    
+    // //Send text
+
+
+    // res.json(users);
+
+    res.send("Request Working!!");
+});
+
 app.get("/", async (_req, res) => {
     //Render ../public/homepage.html
     let path = (0, path_1.resolve)(__dirname + "/../public/homepage.html");
