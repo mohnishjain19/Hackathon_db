@@ -91,7 +91,7 @@ const controller = require("./controller");
 
 const {
     allusers , allmanagers , register , userSpecificBooks , deleteuser , allbooks, settledTrades , 
-    tradesByBooks , tradesByBooksid , preMaturity , postMaturity
+    tradesByBooks , tradesByBooksid , preMaturity , postMaturity, redFlags
 } = require("./controller");
 
 const manager_only = authorizationMiddleware.authorizeRoles(["Manager"]);
@@ -107,6 +107,7 @@ router.route("/booktrade").get(tradesByBooks);
 router.route("/booktradeid").get(tradesByBooksid);
 router.route("/preMaturity").get(preMaturity);
 router.route("/postMaturity").get(postMaturity);
+router.route("/redFlags").get(redFlags);
 
 app.use("/api/v1", router);
 
