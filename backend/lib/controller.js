@@ -1,12 +1,14 @@
-const sequelize = require("./orm");
+const orm = require("./orm");
 const authorizer = require("./auth");
+
+const sequelize = orm.default; 
 
 exports.allusers = async (req, res, next) => {
     try {
         const users = await sequelize.models.User.findAll(
             {
                 where: {
-                    role: 'user'
+                    role: 'User'
                 }
             }
         );
