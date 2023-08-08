@@ -18,7 +18,7 @@ const server=app.listen(process.env.PORT,()=>{
     connectDatabase.connect(function(err){
 
         if(err)throw err;
-        console.log("Database Connected"); 
+        console.log("Database is Connected"); 
     })
 });
 
