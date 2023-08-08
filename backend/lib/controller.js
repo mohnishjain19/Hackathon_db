@@ -91,7 +91,7 @@ exports.userSpecificBooks = async (req, res, next) => {
 
         });}
         catch (err){
-            res.status(401).send(err);
+            res.status(401).send([UserId, err]);
         }
 
         const bookNames = bookuserInstances.map( (bookuserInstance) => {
