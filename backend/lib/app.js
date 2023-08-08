@@ -90,7 +90,8 @@ const router = express.Router();
 const controller = require("./controller");
 
 const {
-    allusers , allmanagers , register , userSpecificBooks , deleteuser , allbooks, settledTrades
+    allusers , allmanagers , register , userSpecificBooks , deleteuser , allbooks, settledTrades , 
+    tradesByBooks , tradesByBooksid , preMaturity , postMaturiy
 } = require("./controller");
 
 const manager_only = authorizationMiddleware.authorizeRoles(["Manager"]);
