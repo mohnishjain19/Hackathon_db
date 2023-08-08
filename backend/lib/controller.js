@@ -209,10 +209,9 @@ exports.tradesByBooks = async (req, res, next) => {
         res.status(500).send("Internal Server Error");
     }
 
-
 }
 
-exports.preMaturity = async (req, res , next )=> {
+exports.preMaturity = async (req, res , next ) => {
 
     try {
         //Find trades with security maturity date <= 1 month after today 
