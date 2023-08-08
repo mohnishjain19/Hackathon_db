@@ -42,7 +42,7 @@ exports.allmanagers =async(req,res,next)=>
 }
 
 
-//Reguster user or manager
+//Register user or manager
 exports.register = async (req, res, next) => {
     try {
         const name = req.body.name; 
@@ -61,6 +61,59 @@ exports.register = async (req, res, next) => {
             });
         });
     } catch(error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Server error' });
+    }
+};
+
+
+// User specific books
+exports.userSpecificBooks = async (req, res, next) => {
+    try {
+        const userid = req.body.userid; // Corrected variable name
+        
+        // Using placeholders in the SQL query to prevent SQL injection
+        const sql = "SELECT Book.BookName FROM bookuser JOIN Book ON Book.Id = BookUser.BookId WHERE UserId = ?";
+        connection.query(sql, [userid], function(err, results) {
+            if (err) {
+                console.log(err);
+                return res.status(500).json({ error: 'Database error' }); 
+            }
+            res.status(200).json({ 
+                message: 'User specific books displayed successfully', 
+                results
+            });
+        });
+    } catch(error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Server error' });
+    }
+};
+
+
+//Delete User
+exports.deleteuser = async (req, res, next) => {
+    try {
+        const email = req.body.email;
+        const sql = "DELETE FROM user WHERE email= ?";
+        
+        connection.query(sql, [email], function(err, results) {
+            if (err) {
+                console.log(err);
+                return res.status(500).json({ error: 'Database error' }); 
+            }
+            
+            if (results.affectedRows === 0) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            res.status(200).json({ 
+                message: 'User deleted successfully', 
+                affectedRows: results.affectedRows
+            });
+        });
+
+    } catch (error) {
         console.log(error);
         return res.status(500).json({ error: 'Server error' });
     }
