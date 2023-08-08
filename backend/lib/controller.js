@@ -112,7 +112,7 @@ exports.deleteuser = async ( req, res, next ) => {
 
         if (!user) {
             res.status(404).json({
-                error: `User with email ${Email} not found`
+                error: `User with email ${EMail} not found`
             })
         }
 
@@ -123,7 +123,7 @@ exports.deleteuser = async ( req, res, next ) => {
         });
 
         res.json({
-            message: `User with email ${Email} deleted successfully`,
+            message: `User with email ${EMail} deleted successfully`,
             affectedRows : 1 
         });
     }
