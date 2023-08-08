@@ -46,14 +46,14 @@ app.post("/user", async (req, res) => {
 });
 
 app.get("/users", async (req, res) => {
-    // const users = await orm_1.default.models.User.findAll();
+    const users = await orm_1.default.models.User.findAll();
     
-    // //Send text
+    //Send text
 
 
-    // res.json(users);
+    res.json(users);
 
-    res.send("Request Working!!");
+    // res.send("Request Working!!");
 });
 
 app.get("/", async (_req, res) => {
