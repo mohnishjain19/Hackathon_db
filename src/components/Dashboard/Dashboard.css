@@ -5,6 +5,15 @@
     height: 100vh; /* Set the container height to 100% of the viewport height */
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&family=Playfair+Display&display=swap');
+
+.pf{
+    font-family: "Playfair Display";
+}
+
+.ops{
+    font-family: "Open Sans";
+}
 .notification-panel {
     position: fixed; /* Position the panel */
     top: 60px; /* Position from the top of the screen */

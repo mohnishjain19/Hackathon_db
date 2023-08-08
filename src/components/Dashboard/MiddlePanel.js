@@ -1,33 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Dashboard.css'; // Import your CSS file for styling
-
-const Component1 = () => {
-  return (
-    <li className="component-box">
-      <h3>Component 1</h3>
-      <p>This is the content of component 1.</p>
-    </li>
-  );
-};
-
-const Component2 = () => {
-  return (
-    <li className="component-box">
-      <h3>Component 2</h3>
-      <p>This is the content of component 2.</p>
-    </li>
-  );
-};
+import Book from './Book';
 
 // ... Repeat similar structure for Component3, Component4, Component5
 
 const MiddlePanel = () => {
+  const [books, setBooks] = useState([{id: 1, BookName: "John Doe's Book"}, {id: 2, BookName: "Ho Li's Book"}])
+
+  useEffect(() => {
+    /*const fetchData = async () => {
+        const response = await fetch(`http://16.171.26.117:8000/api/v1/books`);
+        const newData = await response.json();
+        setBooks(newData);
+    };
+    
+    fetchData();*/
+  }, []) 
+
   return (
-    <div className="middle-panel">
-      <ul className="component-list">
-        <Component1 />
-        <Component2 />
-        {/* Include other Component components */}
+    <div className="panel" style={{maxWidth: "80%", textAlign: "center"}}>
+      <h2 className="pf" style={{paddingTop: "20px", paddingBottom: "30px"}}>Your Books</h2>
+      <ul className="book-list">
+        {
+            books.map((book) => {
+                return (
+                    <Book book={book}/>
+                )
+            })
+        }
       </ul>
     </div>
   );

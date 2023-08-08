@@ -1,21 +1,40 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './Dashboard.css'
 
 import Sidebar from './Sidebar';
 import MiddlePanel from './MiddlePanel';
 import NotificationPanel from './Notification';
 import Header from '../Header/Header'
+import AddUserPage from './User'
+import Userlist from './UserList';
 
 
-export default function Dashboard() {
+export default function Dashboard(props) {
+  const [page, setPage] = useState("Dashboard");
+  
+  const changePage = (event) => {
+    console.log(event.target.outerText)
+    setPage(event.target.outerText)
+  }
+
   return (
     <div className="Dashboard">
-      <Header />
+      <Header logout={props.logout}/>
       <div class="container-fluid" id="main">
         <div class="row row-offcanvas row-offcanvas-left main-container">
-          <Sidebar/>
-          <MiddlePanel/>
-          <NotificationPanel/>
+          <Sidebar changePage={changePage} isManager={props.isManager} name={props.name} email={props.email}/>
+          {
+            (page == "Dashboard") &&
+            <MiddlePanel id={props.id}/>
+          }
+          {
+            ((page == "Create User") && (props.isManager)) &&
+            <AddUserPage />
+          }
+          {
+            (page == "User list" && (props.isManager)) &&
+            <Userlist />
+          }
         </div>
       </div> 
     </div>

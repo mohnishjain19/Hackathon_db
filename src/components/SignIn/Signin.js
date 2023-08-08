@@ -19,15 +19,26 @@ const Signin = (props) => {
 
 
   const submitForm = () => {
-    /*var request = new XMLHttpRequest();
-    request.open("GET", "https://jsonplaceholder.typicode.com/todos/1" , false);
+    var request = new XMLHttpRequest();
+    request.open("GET", "http://16.171.26.117:8000/api/v1/users" , false);
     request.send();
     var json = JSON.parse(request.responseText);
-    console.log(json)
-    if (json.id === 1) {*/
-      props.changeLogin(true)
-      navigate("/home")
-    //}
+    for(let i = 0; i < json.length; i++){
+      console.log(json[i])
+      if (props.email == json[i].Email){
+        if (props.password == "asdf@1234"){
+          if (json[i].Role == "Manager"){
+            props.changeIsManager(true);
+          }
+          props.changeId(json[i].id)
+          props.changeName(json[i].Name)
+          props.changeLogin(true);
+          navigate("/home");
+          return
+        }
+      }
+    }
+    alert("Error")
   }
 
   return (
@@ -65,7 +76,7 @@ const Signin = (props) => {
           placeholder='Password'
           />
           <br></br>
-          <a onClick={submitForm} className='buttons'>Sign In</a>
+          <a onClick={submitForm} className='buttons' style={{width: "110px", cursor: "pointer"}}>Sign In</a>
           <div className="d-flex justify-content-between mx-4 mb-4" style={{marginTop: "10px"}}>
                 < label htmlFor='Remember me' ></label>
                 <a href="#">Forgot password?</a>

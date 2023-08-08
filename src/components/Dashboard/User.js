@@ -14,7 +14,6 @@ export default function AddUserPage() {
 
   return (
     <div className="add-user-page">
-      <Sidebar/>
       <div className="add-user-form">
         <h1>Add User</h1>
 
