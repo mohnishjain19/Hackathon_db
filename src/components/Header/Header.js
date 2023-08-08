@@ -10,9 +10,9 @@ export default function Header() {
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet" />
         <div style={{paddingLeft: "20px", "display": "flex", "justifyContent": "space-around", "width": "250px", "alignItems": "center"}} >
             <img src="https://logos-marques.com/wp-content/uploads/2021/07/Deutsche-Bank-Logo.png" height={40}/>
-            <p style={{"font-family": "Playfair Display", "font-size": "1.3rem"}}>Deutsche Bank</p>
+            <p style={{fontFamily: "Playfair Display", fontSize: "1.3rem"}}>Deutsche Bank</p>
         </div>
-        <img src={logout} height={24} style={{"paddingRight": 30}}/>
+        <img src={logout} height={24} style={{"paddingRight": 30, cursor: "pointer"}}/>
     </div>
   )
 }

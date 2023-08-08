@@ -1,33 +1,33 @@
 import './App.css';
 import Signin from './components/SignIn/Signin';
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Dashboard from './components/Dashboard/Dashboard';
-import useToken from './useToken';
-
 
 function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { token, setToken } = useToken();
+  const [login, setLogin] = useState(false);
 
   const changeEmail = (event) => {
     setEmail(event.target.value);
   }
 
-  const submitForm = (event) => {
-    // to do
+  const changeLogin = (value) => {
+    setLogin(value);
   }
 
+  const changePassword = (event) => {
+    setPassword(event.target.value);
+  }
+
+  const router = createBrowserRouter([
+    {path: "/", element: <Signin email={email} password={password} changeEmail={changeEmail} changeLogin={changeLogin} changePassword={changePassword}/>},
+    {path: "/home", element: <Dashboard login={login}/>},
+  ])
+
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Signin email={email} password={password} changeEmail={changeEmail} submitForm={submitForm}/>} />
-          <Route path="/home" element={<Dashboard />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <RouterProvider router={router} />
   );
 }
 
