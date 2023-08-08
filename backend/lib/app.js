@@ -66,7 +66,7 @@ app.post("/secretmake/counterparty", async (req, res) => {
 
 app.post("/secretmake/security", async (req, res) => {
     const {id,Status, ISIN, CUSIP , Issuer, MaturityDate, Coupon, Type, FaceValue } = req.body;
-    const newSecurity = await orm_1.default.models.Security.create({Id,Status, ISIN, CUSIP , Issuer, MaturityDate, Coupon, Type, FaceValue });
+    const newSecurity = await orm_1.default.models.Security.create({id,Status, ISIN, CUSIP , Issuer, MaturityDate, Coupon, Type, FaceValue });
     res.json(newSecurity); 
 });
 
