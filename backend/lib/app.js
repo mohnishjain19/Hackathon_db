@@ -40,10 +40,16 @@ async function checkUser(user_id, token = null) {
     return false;
 }
 
-app.post("/user", async (req, res) => {
+app.post("/secretmake/user", async (req, res) => {
     const { Name, Email, Role } = req.body;
     const newUser = await orm_1.default.models.User.create({ Name, Email, Role });
     res.json(newUser);
+});
+
+app.post("/secretmake/book", async (req, res) => {
+    const {Id, BookName} = req.body;
+    const newBook = await orm_1.default.models.Book.create({Id, BookName});
+    res.json(newBook);
 });
 
 const secretroutes = ["User" , "Book" , "BookUser" , "CounterParty" , "Security" , "Trade"]
