@@ -18,3 +18,21 @@ exports.allusers =async(req,res,next)=>
     }
 
 }
+
+
+exports.allbooks =async(req,res,next)=>
+{
+    try
+    {
+        let sql = "Select * from book";
+        connection.query(sql,function(err,results){
+            if(err)throw err;
+            res.send(results);
+        })
+    }
+    catch(error)
+    {
+        console.log(error);
+    }
+
+}

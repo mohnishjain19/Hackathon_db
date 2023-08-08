@@ -1,10 +1,10 @@
 const express=require("express");
 const  router = express.Router()
-const { allusers } = require("../controller/controller");
+const { allusers,allbooks } = require("../controller/controller");
 
 
 router.route("/users").get(allusers);
-
+router.route("/books").get(allbooks);
 
 
 
