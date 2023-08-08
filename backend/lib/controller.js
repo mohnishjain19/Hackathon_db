@@ -103,7 +103,7 @@ exports.userSpecificBooks = async (req, res, next) => {
 
 exports.deleteuser = async ( req, res, next ) => {
 
-    const EMail = req.body.EMail;
+    const EMail = req.body.email;
     
     try {
 
