@@ -204,8 +204,9 @@ sequelize.models.User.belongsToMany(sequelize.models.Book, { through: 'BookUser'
 sequelize.models.Trade.belongsTo(sequelize.models.Book);
 sequelize.models.Trade.belongsTo(sequelize.models.CounterParty);
 sequelize.models.Trade.belongsTo(sequelize.models.Security);
+
 //Sync the models with the database
-sequelize.sync({ alter: true }).then(() => {
+sequelize.sync({ alter: false }).then(() => {
     console.log("Database Synced");
 }).catch((error) => {
     console.log("Error syncing database: ", error);
