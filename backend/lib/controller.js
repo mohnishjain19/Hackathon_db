@@ -104,23 +104,28 @@ exports.deleteuser = async ( req, res, next ) => {
     
     try {
 
-        const user = await sequelize.models.User.findOne({
-            where: {
-                Email : EMail
-            }
-        });
 
-        if (!user) {
+        const user = await sequelize.query(
+            "Select count(*) from User where Email = ?", 
+            {
+                replacements: [EMail],
+                type: QueryTypes.SELECT
+              }
+        );
+
+        if (user[0]['count(*)'] == 0) {
             res.status(404).json({
                 error: `User with email ${EMail} not found`
             })
         }
 
-        await sequelize.models.User.destroy({
-            where: {
-                Email : EMail
+        await sequelize.query(
+            "Delete from User where Email = ?",
+            {
+                replacements: [EMail],
+                type: QueryTypes.DELETE
             }
-        });
+        );
 
         res.json({
             message: `User with email ${EMail} deleted successfully`,
