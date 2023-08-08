@@ -1,3 +1,5 @@
+//NOTE: Do not use this file. Typescript compilation has been stopped way earlier. Find the files in lib folder 
+
 import {Sequelize, DataTypes} from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 
