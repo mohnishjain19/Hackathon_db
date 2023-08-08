@@ -10,35 +10,31 @@ const app = express();
 //JSON stuff
 app.use(express.json());
 
+const  cookieParser =require("cookie-parser");
+const  bodyParser=require("body-parser");
+const cors=require("cors");
 
 
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));;
+app.use(cors());
+app.use(cookieParser());
 
-function checkUserMiddleware(req, res, next) {
-    //Check if user is logged in
-    //If not, redirect to login page
-    //If so, continue
-    let user_id = req.body.user_id;
-    let token = req.body.token;
-    if (checkUser(user_id, token)) {
-        next();
-    }
-    else {
-        res.redirect("/login");
-    }
-}
+process.on("uncaught Exception",(err)=>{
+    console.log(`Error: ${err.message}`);
+    console.log(`Shutting down the server due to Unhandled Promise Rejection`);
+    process.exit(1);
+});
 
+process.on("unhandledRejection", (err) => {
+    // console.log('Error: ${err.message}`);
+    console.log(`Error: ${err.message}`);
+    console.log(`Shutting down the server due to Unhandled Promise Rejection`);
+    server.close(()=>{
+        process.exit(1);
+    });
+});
 
-async function checkUser(user_id, token = null) {
-    //Get user from orm using user_id 
-    let user = await orm_1.default.models.User.findOne({ where: { id: user_id } });
-    if (user == null || token == null) {
-        return false;
-    }
-    if (user.Token == token) {
-        return true;
-    }
-    return false;
-}
 
 app.post("/secretmake/user", async (req, res) => {
     const { Name, Email, Role } = req.body;
@@ -86,15 +82,30 @@ for (let route of secretroutes) {
     });
 }
 
+//Dotenv config 
+const dotenv = require("dotenv");
+dotenv.config({path : path_1.resolve("../.env")});
 
-app.get("/", async (_req, res) => {
-    //Render ../public/homepage.html
-    let path = (0, path_1.resolve)(__dirname + "/../public/homepage.html");
-    res.sendFile(path);
+const port = process.env.PORT || 8000;
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });
 
+const authorizationMiddleware = require("./auth");
+const router = express.Router();
+const controller = require("./controller");
 
+const {
+    allusers , allmanagers , register , userSpecificBooks , deleteuser , allbooks
+} = require("./controller");
 
-// start express server
-app.listen(8000);
-console.log("Started Running Application");
+const manager_only = authorizationMiddleware.authorizeRoles(["Manager"]);
+
+router.route("/users").get( manager_only, allusers);
+router.route("/managers").get(manager_only , allmanagers);
+router.route("/books").get(manager_only , allbooks);
+router.route("/create").post(register);
+router.route("/delete").delete(deleteuser);
+router.route("/userbonds").get(userSpecificBooks);
+
+app.use("/api/v1", router);
