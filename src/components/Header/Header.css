@@ -6,10 +6,10 @@
     height: 2px;
     background: #ba9605;
     transition: transform 1s ease-in-out;
-    transform: scale(0.90);
+    transform: scale(1);
     bottom: 0;
 }
 
 .header:hover::after{
-    transform: scale(1);
+    transform: scale(0.8);
 }

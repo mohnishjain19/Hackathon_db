@@ -1,0 +1,98 @@
+.sidebar-container {
+    background-color: #e9ecef;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Set the container height to 100% of the viewport height */
+}
+
+.notification-panel {
+    position: fixed; /* Position the panel */
+    top: 60px; /* Position from the top of the screen */
+    right: 0; /* Position from the right of the screen */
+    width: 300px; /* Set a width for the panel */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .middle-panel {
+    display: flex;
+    justify-content: center;
+    padding-left: 15%;
+    align-items: center;
+    height: 100vh; /* Adjust as needed */
+  }
+  
+  .component-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(700px, 1fr));
+    gap: 20px;
+  }
+  
+  .component-box {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+
+  .main-container
+  {
+    display: flex;
+  height: 100vh;
+  };
+
+  .add-user-page {
+    display: flex;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+  }
+  
+  .add-user-form {
+    margin: auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 600px;
+  }
+  
+  .add-user-form h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .add-user-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  .add-user-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .add-user-form button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .add-user-form button:hover {
+    background-color: #0056b3;
+  }
+  
