@@ -71,7 +71,9 @@ exports.register = async (req, res, next) => {
 }
 
 exports.userSpecificBooks = async (req, res, next) => {
+    
     const UserId = req.query.id;
+
     try {
         const user = await sequelize.models.User.findByPk(UserId);
         if (!user) {
@@ -80,14 +82,17 @@ exports.userSpecificBooks = async (req, res, next) => {
             })
         }
 
-        //Get all bookuser instances for this user 
+        try {        //Get all bookuser instances for this user 
         const bookuserInstances = await sequelize.models.BookUser.findAll({
             where: {
                 UserId : UserId
             },
             include : sequelize.models.Book
 
-        });
+        });}
+        catch (err){
+            res.status(401).send(err);
+        }
 
         const bookNames = bookuserInstances.map( (bookuserInstance) => {
             return bookuserInstance.Book.BookName;
