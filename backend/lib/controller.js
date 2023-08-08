@@ -46,6 +46,8 @@ exports.register = async (req, res, next) => {
     const Email = req.body.email;
     const Role = req.body.role;
 
+    console.log(Role);
+
     if (!authorizer.roles.includes(Role)) {
         res.status(401).json({
             error:`Role :${Role} is not allowed to access this resource`
