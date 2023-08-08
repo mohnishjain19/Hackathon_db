@@ -92,7 +92,7 @@ const router = express.Router();
 const controller = require("./controller");
 
 const {
-    allusers , allmanagers , register , userSpecificBooks , deleteuser , allbooks
+    allusers , allmanagers , register , userSpecificBooks , deleteuser , allbooks, settledTrades
 } = require("./controller");
 
 const manager_only = authorizationMiddleware.authorizeRoles(["Manager"]);
@@ -103,6 +103,7 @@ router.route("/books").get(allbooks);
 router.route("/create").post(register);
 router.route("/delete").delete(deleteuser);
 router.route("/userbonds").get(userSpecificBooks);
+router.route("/settledtrade").get(settledTrades);
 
 app.use("/api/v1", router);
 

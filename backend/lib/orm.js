@@ -165,17 +165,29 @@ const Trade = {
         type: sequelize_1.DataTypes.DATE,
     },
 };
-const sequelize = new sequelize_1.Sequelize('db_hackathon', //database name 
-'aniruddh', //username
-'polo-sheath-battery-golf-cheek', //password
+
+const db_name = "db_hackathon";
+const db_username = "aniruddh";
+const db_password = "polo-sheath-battery-golf-cheek";
+const db_host = "db-1.clq6r5hpitgr.eu-north-1.rds.amazonaws.com";
+const db_port = 3306;
+const db_dialect = "mysql";
+const db_dialectOptions = {
+    ssl: 'Amazon RDS'
+};
+
+
+const sequelize = new sequelize_1.Sequelize(db_name,  
+db_username, 
+db_password, //password
 {
-    host: 'db-1.clq6r5hpitgr.eu-north-1.rds.amazonaws.com',
-    dialect: 'mysql',
-    port: 3306,
-    logging: console.log,
-    dialectOptions: {
-        ssl: 'Amazon RDS'
+    host: db_host,
+    dialect: db_dialect,
+    port: db_port,
+    logging: {
+        
     },
+    dialectOptions: db_dialectOptions,
     pool: { idle: 30, max: 5, min: 1, acquire: 45 * 1000 },
 });
 sequelize.authenticate().then(() => {

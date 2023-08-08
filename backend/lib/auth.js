@@ -5,7 +5,6 @@ exports.authorizeRoles =( ...roles)=>{
                 res.status(401).json({
                     error:`Role :${req.user.role} is not allowed to access this resource`
                 })
-                    //  return next(new ErrorHandler(`Role :${req.user.role} is not allowed to access this resource`,403));
     }
     next();
 };

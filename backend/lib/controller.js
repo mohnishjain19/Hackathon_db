@@ -81,17 +81,13 @@ exports.userSpecificBooks = async (req, res, next) => {
         const bookuserInstances = await sequelize.models.BookUser.findAll({
             where: {
                 UserId : UserId
-            }
+            },
+            include : sequelize.models.Book
+
         });
 
-        //Get all book Ids 
-        const bookIds = bookuserInstances.map(bookuserInstance => bookuserInstance.BookId);
-
-        //Get all booknames 
-        const bookNames = await sequelize.models.Book.findAll({
-            where: {
-                id: bookIds
-            }
+        const bookNames = bookuserInstances.map( (bookuserInstance) => {
+            return bookuserInstance.Book.BookName;
         });
 
         res.json(bookNames);
@@ -145,6 +141,29 @@ exports.allbooks = async (req, res, next ) => {
         const books = await sequelize.models.Book.findAll();
         res.json(books);
     }
+    catch(err){
+        console.error(err);
+        res.status(500).send("Internal Server Error");
+    }
+}
+
+exports.settledTrades = async (req, res, next) => {
+
+    try {
+        const settledTrades = await sequelize.models.Trade.findAll({
+            where: {
+                Status : "Completed"
+            },
+            include : [
+                sequelize.models.Book,
+                sequelize.models.Counterparty,
+                sequelize.models.Security
+            ]
+        });
+
+        res.json(settledTrades);
+    }
+
     catch(err){
         console.error(err);
         res.status(500).send("Internal Server Error");
