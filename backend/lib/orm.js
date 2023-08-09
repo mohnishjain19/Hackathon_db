@@ -166,7 +166,7 @@ const Trade = {
     },
 };
 
-console.log(process.env);
+// console.log(process.env);
 
 const db_name = process.env.db_name;
 const db_username = process.env.db_username;
@@ -179,15 +179,15 @@ const db_dialectOptions = {
     ssl: 'Amazon RDS'
 };
 
-console.log({
-    db_name,
-    db_username,
-    db_password,
-    db_host,
-    db_port,
-    db_dialect,
-    db_dialectOptions
-});
+// console.log({
+//     db_name,
+//     db_username,
+//     db_password,
+//     db_host,
+//     db_port,
+//     db_dialect,
+//     db_dialectOptions
+// });
 
 const logger = require('./logger');
 const sequelize = new sequelize_1.Sequelize(db_name,  
