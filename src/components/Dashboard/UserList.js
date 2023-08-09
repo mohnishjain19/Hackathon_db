@@ -7,10 +7,29 @@ export default function Userlist () {
 
   useEffect(() => {
     var request = new XMLHttpRequest();
-    request.open("GET", "http://16.171.26.117:8000/api/v1/users" , false);
-    request.send();
-    var json = JSON.parse(request.responseText);
-    setUsers(json)
+        request.open("GET", "http://16.171.26.117:8000/api/v1/users" , false);
+        request.send();
+        var users = JSON.parse(request.responseText);
+        var request = new XMLHttpRequest();
+        request.open("GET", "http://16.171.26.117:8000/api/v1/managers" , false);
+        request.send();
+        var managers = JSON.parse(request.responseText);
+        for(let i=0; i<users.length; i++) {
+            var request = new XMLHttpRequest();
+            request.open("GET", "http://16.171.26.117:8000/api/v1/userbonds?id=" + users[i].id, false);
+            request.send();
+            var books = JSON.parse(request.responseText);
+            users[i].books = books;
+        }
+        for(let i=0; i<managers.length; i++) {
+            var request = new XMLHttpRequest();
+            request.open("GET", "http://16.171.26.117:8000/api/v1/userbonds?id=" + managers[i].id, false);
+            request.send();
+            var books = JSON.parse(request.responseText);
+            managers[i].books = books;
+        }
+        let res = [...users, ...managers];
+        setUsers(res);
   }, [])
 
   const handleDelete = (user) => {
