@@ -327,6 +327,90 @@ exports.tradesByBooksid = async (req, res, next) => {
         res.status(500).send("Internal Server Error");
     }
 
+
+}
+
+exports.addBookUser = async (req, res, next) => {
+    try {
+        const {bookId, userId} = req.body; 
+
+        if (!bookId ){
+            res.status(401).send("bookId cannot be null");
+            return; 
+        }
+
+        if (!userId){
+            res.status(401).send("userId cannot be null");
+            return; 
+        }
+
+        //Check if bookId exists 
+        const book = await sequelize.models.Book.findAndCountAll(
+            {
+                where: {
+                    id : bookId
+                }
+            }
+        );
+
+        if (book.count == 0 ){
+            res.status(400).json({
+                success : false, 
+                message : `Book with ID ${bookId} does not exist`
+            });
+            return; 
+        }
+
+        const tuser = await sequelize.models.User.findAndCountAll({
+            where : {
+                id : userId
+            }
+        });
+
+        if (tuser.count == 0 ){
+            res.status(400).json({
+                success : false, 
+                message : `User with ID ${userId} does not exist`
+            });
+            return;             
+        }
+
+        const [existing_user, user] = await sequelize.models.BookUser.findOrCreate(
+            {
+                where : {
+                    BookId : bookId, 
+                    userId : userId
+                }
+            }
+        );
+
+        if (existing_user){
+            res.json({
+                success : true, 
+                message : "User already exists",
+                data : existing_user
+            });
+
+            return; 
+        }
+
+        else if (user){
+            res.json({
+                success : true, 
+                message : "User created",
+                data : user 
+            });
+
+            return; 
+        }
+
+    }
+
+
+    catch (err){
+        console.log(err , err.stack);
+        res.status(501).send("Internal Server Error");
+    }
 }
 
 async function getAccountingFlags(){
