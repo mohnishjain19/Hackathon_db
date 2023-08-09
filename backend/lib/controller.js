@@ -18,7 +18,7 @@ exports.allusers = async (req, res, next) => {
     }
     catch(err){
         console.error(err , err.stack);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send({error : "Internal Server Error"});
     }
 }
 
@@ -36,7 +36,7 @@ exports.allmanagers = async (req, res, next) => {
     }
     catch(err){
         console.error(err , err.stack);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send({error : "Internal Server Error"});
     }
 }
 
@@ -55,17 +55,38 @@ exports.register = async (req, res, next) => {
     }
 
     try {
-        const user = await sequelize.models.User.create({
+
+        //Check if user with email exists 
+        const userExists = await sequelize.models.User.findAndCountAll({
+            where : {
+                Email : Email
+            }
+        });
+
+        if (userExists.count > 0 ) {
+            res.status(400).json({
+                error: `User with email ${Email} already exists`
+            });
+            return;
+        }
+
+        let user = await sequelize.models.User.create({
             Name,
             Email,
             Role
         });
+
+        user = {
+            data: user, 
+            message : "User created successfully"
+        };
+
         res.json(user);
     }
 
     catch(err){
         console.error(err , err.stack);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send({error : "Internal Server Error"});
     }
 
 }
@@ -117,7 +138,7 @@ exports.userSpecificBooks = async (req, res, next) => {
     }
     catch(err){
         console.error(err , err.stack);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send({error : "Internal Server Error"});
     }
 }
 
@@ -158,7 +179,7 @@ exports.deleteuser = async ( req, res, next ) => {
 
     catch(err) {
         console.error(err , err.stack);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send({error : "Internal Server Error"});
     }
 }
 
@@ -171,7 +192,7 @@ exports.allbooks = async (req, res, next ) => {
     }
     catch(err){
         console.error(err , err.stack);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send({error : "Internal Server Error"});
     }
 }
 
@@ -200,7 +221,7 @@ exports.settledTrades = async (req, res, next) => {
 
     catch(err){
         console.error(err , err.stack);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send({error : "Internal Server Error"});
     }
 }
 
@@ -226,7 +247,7 @@ exports.tradesByBooks = async (req, res, next) => {
     }
     catch (err) {
         console.error(err , err.stack);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send({error : "Internal Server Error"});
     }
 
 }
@@ -263,7 +284,7 @@ exports.preMaturity = async (req, res , next ) => {
     }
     catch(err) {
         console.error(err , err.stack);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send({error : "Internal Server Error"});
     }
 }
 
@@ -294,7 +315,7 @@ exports.postMaturity = async (req, res ,next) => {
     }
     catch(err){
         console.error(err , err.stack);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send({error : "Internal Server Error"});
 
     }
 }
@@ -324,7 +345,7 @@ exports.tradesByBooksid = async (req, res, next) => {
     }
     catch (error){
         console.error(error, error.stack);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send({error : "Internal Server Error"});
     }
 
 
@@ -335,12 +356,12 @@ exports.addBookUser = async (req, res, next) => {
         const {bookId, userId} = req.body; 
 
         if (!bookId ){
-            res.status(401).send("bookId cannot be null");
+            res.status(401).send({error : "bookId cannot be null"});
             return; 
         }
 
         if (!userId){
-            res.status(401).send("userId cannot be null");
+            res.status(401).send({error : "userId cannot be null"});
             return; 
         }
 
@@ -356,7 +377,7 @@ exports.addBookUser = async (req, res, next) => {
         if (book.count == 0 ){
             res.status(400).json({
                 success : false, 
-                message : `Book with ID ${bookId} does not exist`
+                error : `Book with ID ${bookId} does not exist`
             });
             return; 
         }
@@ -370,7 +391,7 @@ exports.addBookUser = async (req, res, next) => {
         if (tuser.count == 0 ){
             res.status(400).json({
                 success : false, 
-                message : `User with ID ${userId} does not exist`
+                error : `User with ID ${userId} does not exist`
             });
             return;             
         }
@@ -409,7 +430,7 @@ exports.addBookUser = async (req, res, next) => {
 
     catch (err){
         console.log(err , err.stack);
-        res.status(501).send("Internal Server Error");
+        res.status(501).send({error : "Internal Server Error"});
     }
 }
 
@@ -489,7 +510,7 @@ exports.accountingFlags = async (req, res, next) => {
     }
     catch (err) {
         console.error(err , err.stack);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send({error : "Internal Server Error"});
     }
 }
 
@@ -500,7 +521,7 @@ exports.complianceFlags = async (req, res, next) =>{
     }
     catch (err){
         console.error(err , err.stack);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send({error : "Internal Server Error"});
     }
 }
 
@@ -562,7 +583,7 @@ exports.red = async (req, res, next) =>{
     res.json(trades);}
     catch(err){
         console.error(err, err.stack);
-        res.status(501).send("Internal Server Error");
+        res.status(501).send({error : "Internal Server Error"});
     }
 }
 
@@ -595,7 +616,7 @@ exports.redFlags = async (req, res, next) => {
 
     catch (err){
         console.error(err , err.stack);
-        res.status(500).send("Internal Server Error");
+        res.status(500).send({error : "Internal Server Error"});
 
     }
 
