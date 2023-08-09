@@ -1,6 +1,6 @@
 const express=require("express");
 const  router = express.Router()
-const { allusers,allbooks,allmanagers ,register,deleteuser,userSpecificBooks,settledTrades,tradesByBooks,tradesByBooksid, preMaturity, postMaturiy} = require("../controller/controller");
+const { allusers,allbooks,allmanagers ,register,deleteuser,userSpecificBooks,settledTrades,tradesByBooks,tradesByBooksid, preMaturity, postMaturiy,addBookUser} = require("../controller/controller");
 
 
 //Fetching Al users
@@ -36,6 +36,10 @@ router.route("/preMaturity").get(preMaturity);
 
 // Post Maturity Dates
 router.route("/postMaturity").get(postMaturiy);
+
+
+// Link book and user in bookuser tabel
+router.route("/addbookuser").post(addBookUser);
 
 
 

@@ -279,6 +279,64 @@ exports.tradesByBooksid = async (req, res, next) => {
     }
 };
 
+// Add Book User
+exports.addBookUser = async (req, res, next) => {
+    try {
+      const { bookId, userId } = req.body;
+  
+      // Check if the user exists
+      const userQuery = 'SELECT * FROM user WHERE Id = ?';
+      connection.query(userQuery, [userId], (userErr, userResults) => {
+        if (userErr) {
+          console.error('Error checking user:', userErr);
+          return res.status(500).json({ error: 'Error checking user' });
+        } else if (userResults.length === 0) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+  
+        // Check if the book exists
+        const bookQuery = 'SELECT * FROM Book WHERE Id = ?';
+        connection.query(bookQuery, [bookId], (bookErr, bookResults) => {
+          if (bookErr) {
+            console.error('Error checking book:', bookErr);
+            return res.status(500).json({ error: 'Error checking book' });
+          } else if (bookResults.length === 0) {
+            return res.status(404).json({ error: 'Book not found' });
+          }
+  
+          // Check if the book user already exists
+          const existingBookUserQuery = 'SELECT * FROM BookUser WHERE BookId = ? AND UserId = ?';
+          connection.query(existingBookUserQuery, [bookId, userId], (existingErr, existingResults) => {
+            if (existingErr) {
+              console.error('Error checking existing book user:', existingErr);
+              return res.status(500).json({ error: 'Error checking existing book user' });
+            } else if (existingResults.length > 0) {
+              return res.status(409).json({ message: 'Book user already exists' });
+            }
+  
+            // Insert the book user
+            const insertQuery = 'INSERT INTO BookUser (BookId, UserId) VALUES (?, ?)';
+            const values = [bookId, userId];
+            connection.query(insertQuery, values, (insertErr, insertResult) => {
+              if (insertErr) {
+                console.error('Error adding book user:', insertErr);
+                return res.status(500).json({ error: 'Error adding book user' });
+              }
+              console.log('Book user added successfully');
+              return res.status(200).json({
+                message: 'Book user added successfully',
+                insertResult,
+              });
+            });
+          });
+        });
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'An error occurred' });
+    }
+  };
+  
 
 
 
