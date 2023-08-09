@@ -303,13 +303,13 @@ exports.postMaturity = async (req, res ,next) => {
 exports.tradesByBooksid = async (req, res, next) => {
 
     try {
-        const bookId = req.query.id;
+        const bookId = parseInt(req.query.id);
         const trades = await sequelize.models.Trade.findAll({
             include : [
                 {
                     model : sequelize.models.Book,
                     where : {
-                        id : bookId
+                        id : bookId || -1
                     }
                 }, {
                     model : sequelize.models.CounterParty,
