@@ -40,6 +40,7 @@
     "html-tablify": "^2.0.4",
     "mysql": "^2.18.1",
     "mysql2": "^3.6.0",
+    "nodemailer": "^6.9.4",
     "reflect-metadata": "^0.1.13",
     "sequelize": "^6.32.1",
     "tslint": "^6.1.3",
