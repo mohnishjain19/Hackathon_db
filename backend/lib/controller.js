@@ -557,7 +557,7 @@ exports.red = async (req, res, next) =>{
 
     books = books.map(x => x.BookId);
 
-    let trades = getRedFlags();
+    let trades = await getRedFlags();
     trades = trades.filter(x => books.include(x.BookId) );
     res.json(trades);}
     catch(err){
@@ -576,7 +576,7 @@ exports.redFlags = async (req, res, next) => {
         //Both are separate tables joined by foreign key Trade.SecurityId = Security.id
 
         let bookid = req.body.bookid;
-        let trades = getRedFlags();
+        let trades = await getRedFlags();
 
         if (bookid == null || bookid == undefined || bookid == "" ) {
         }
