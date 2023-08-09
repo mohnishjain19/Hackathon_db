@@ -82,7 +82,7 @@ exports.userSpecificBooks = async (req, res, next) => {
         
         catch(err) {
             res.status(400).json({
-                error: `Invalid User Id ${UserId}: type : ${typeof UserId}`
+                error: `Invalid User Id ${UserId}: type : ${typeof UserId}, err: ${err}`
             });
             return; 
         }
