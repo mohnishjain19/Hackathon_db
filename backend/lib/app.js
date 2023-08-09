@@ -5,7 +5,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //Dotenv config 
 const dotenv = require("dotenv");
 const path_1 = require("path");
-dotenv.config({path : path_1.resolve(__dirname + "/.env")});
+
+// Get directory of the current script 
+let dir = path_1.dirname(__filename);
+dotenv.config({path : path_1.resolve(dir + "../.env")});
 
 const express = require("express");
 const orm_1 = require("./orm");
