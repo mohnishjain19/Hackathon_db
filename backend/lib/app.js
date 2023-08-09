@@ -4,11 +4,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 
 //Dotenv config 
 const dotenv = require("dotenv");
+const path_1 = require("path");
 dotenv.config({path : path_1.resolve("../.env")});
 
 const express = require("express");
 const orm_1 = require("./orm");
-const path_1 = require("path");
 const html_tablify = require("html-tablify");
 // create and setup express app
 const app = express();
