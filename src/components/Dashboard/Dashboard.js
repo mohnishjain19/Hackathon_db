@@ -7,6 +7,7 @@ import NotificationPanel from './Notification';
 import Header from '../Header/Header'
 import AddUserPage from './User'
 import Userlist from './UserList';
+import AssignBonds from './AssignBonds';
 
 
 export default function Dashboard(props) {
@@ -20,12 +21,12 @@ export default function Dashboard(props) {
   return (
     <div className="Dashboard">
       <Header logout={props.logout}/>
-      <div class="container-fluid" id="main">
-        <div class="row row-offcanvas row-offcanvas-left main-container">
+      <div class="container-fluid" id="main" style={{height: "100%"}}>
+        <div class="row row-offcanvas row-offcanvas-left main-container" style={{height: "100%"}}>
           <Sidebar changePage={changePage} isManager={props.isManager} name={props.name} email={props.email}/>
           {
             (page == "Dashboard") &&
-            <MiddlePanel id={props.id}/>
+            <MiddlePanel id={props.id} isManager={props.isManager}/>
           }
           {
             ((page == "Create User") && (props.isManager)) &&
@@ -34,6 +35,10 @@ export default function Dashboard(props) {
           {
             (page == "User list" && (props.isManager)) &&
             <Userlist />
+          }
+          {
+            (page == "Assign Bonds" && (props.isManager)) &&
+            <AssignBonds />
           }
         </div>
       </div> 

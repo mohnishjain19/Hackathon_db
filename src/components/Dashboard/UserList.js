@@ -11,11 +11,17 @@ export default function Userlist () {
     request.send();
     var json = JSON.parse(request.responseText);
     setUsers(json)
-  })
+  }, [])
+
+  const handleDelete = (user) => {
+    console.log(user)
+  }
 
   return (
-      
+      <div>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <div className='user-list-container'>
+
         <table className='user-table'>
         <thead>
             <tr>
@@ -23,6 +29,7 @@ export default function Userlist () {
                 <th>Name (Username)</th>
                 <th>Email</th>
                 <th>Role</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -32,10 +39,14 @@ export default function Userlist () {
                     <td>{user.Name}</td>
                     <td>{user.Email}</td>
                     <td>{user.Role}</td>
+                    <td style={{cursor: "pointer", textAlign: "right", width:"20px"}}><span onClick={handleDelete(user.email)} class="material-symbols-outlined">
+                    delete
+                    </span></td>
                 </tr>
             ))}
         </tbody>
     </table>
+    </div>
     </div>
   )
 }

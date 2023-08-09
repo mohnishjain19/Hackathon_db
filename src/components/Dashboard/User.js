@@ -5,11 +5,28 @@ import './Dashboard.css';
 export default function AddUserPage() {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Submitted user data:', { email, role });
+    fetch("http://16.171.26.117:8000/api/v1/create", {
+      method: "post",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+
+      //make sure to serialize your JSON body
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        role: role
+      })
+    })
+    .then( (response) => { 
+      alert(response.message)
+    }).catch ((error) => {
+      alert(error.error)
+    });
   };
 
   return (
@@ -18,6 +35,15 @@ export default function AddUserPage() {
         <h1>Add User</h1>
 
         <form onSubmit={handleSubmit}>
+
+          <label>
+            Name:
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </label>
 
           <label>
             Email:
@@ -34,15 +60,6 @@ export default function AddUserPage() {
               type="text"
               value={role}
               onChange={(e) => setRole(e.target.value)}
-            />
-          </label>
-
-          <label>
-            Password:
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
             />
           </label>
 

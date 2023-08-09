@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 
 export default function Book(props) {
   const [trades, setTrades] = useState([/*{
@@ -49,17 +49,6 @@ export default function Book(props) {
   }*/
 ])
 
-  const statusList = {
-    "Active": {
-      "icon": "rotate_left",
-      "color": "yellow"
-    },
-    "Settled": {
-      "icon": "done",
-      "color": "rgb(18, 219, 18)"
-    }
-  }
-
   useEffect(() => {
     var request = new XMLHttpRequest();
     request.open("GET", "http://16.171.26.117:8000/api/v1/booktradeid?id=" + props.book.id , false);
@@ -68,6 +57,24 @@ export default function Book(props) {
     setTrades(json)
   }, [])
 
+  const filteredData = useMemo(() => {  
+    if (!props.category || props.category==="" || props.category === "all") return trades;  
+
+    if (props.category === "Trade: Settled") return trades.filter(trade => trade.Status === "Completed")
+
+    if (props.category === "Trade: Pending") return trades.filter(trade => trade.Status === "Pending")
+
+    if (props.category === "Bond: Active") return trades.filter(trade => trade.Security.Status === "Active")
+
+    if (props.category === "Bond: Nearing") return trades.filter(trade => trade.Security.Status === "Nearing")
+
+    if (props.category === "Bond: Post Maturity") return trades.filter(trade => trade.Security.Status === "PostMaturity")
+
+    if (props.category === "Bond: Settled") return trades.filter(trade => trade.Security.Status === "Settled")
+
+    return trades;
+  }, [props.category]); 
+
   return (
     <div>
     <div className="book" style={{minWidth: "100%", boxShadow: "rgba(0, 0, 0, 0.35) 0px 5px 15px", padding: "0px 30px", borderRadius: "10px", paddingBottom: "20px", marginBottom:"40px"}}>
@@ -75,14 +82,14 @@ export default function Book(props) {
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
         <h4 className="pf" style={{paddingTop: "20px", paddingBottom: "30px"}}>{props.book.BookName}</h4>
         {
-            trades.map((trade) => 
+            filteredData.map((trade) => 
             <div className="ops" style={{ display: "flex", minWidth: "100%", marginTop: "20px", boxShadow: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px', padding: '20px', textAlign: "left"}}>
                 <div className='trade' style={{width: "50%", display: "flex" }}>
                     <div className='columna' style={{width: "50%"}}>
-                        <h5>Trade Id: {trade.Id}</h5>
+                        <h5>Trade Id: {trade.id}</h5>
                         <h6>Quantity: {trade.Quantity}</h6>
-                        <h6>Trade Date: {trade.TradeDate}</h6>
-                        <h6>SettlementDate: {trade.SettlementDate? trade.SettlementDate : "-"}</h6>
+                        <h6>Trade Date: {trade.TradeDate.slice(0,10)}</h6>
+                        <h6>SettlementDate: {trade.SettlementDate? trade.SettlementDate.slice(0,10) : "-"}</h6>
                     </div>
                     <div className='columnb' style={{width: "50%", paddingLeft: "5px"}}>
                         <h5>Status: {trade.Status === "Completed" ? <span style={{fontSize: "1rem"}} ><span class="material-symbols-outlined" style={{color: "rgb(18, 219, 18)", fontSize: "1.1rem", fontWeight: "bold"}}>done</span>{trade.Status}</span>
@@ -91,7 +98,7 @@ export default function Book(props) {
                         </span>{trade.Status}</span>}
                         </h5>
                         <h6>Price: {trade.Price}</h6>
-                        <h6>Counterparty: {trade.CounterpartyId}</h6>
+                        <h6>Counterparty: {trade.CounterParty.Name}</h6>
                         <h6>Type: {trade.Buy_Sell}</h6>
                     </div>
                 </div>
@@ -100,7 +107,7 @@ export default function Book(props) {
                         <h5>ISIN: {trade.Security.ISIN}</h5>
                         <h6>FaceValue: {trade.Security.FaceValue}</h6>
                         <h6>CUSIP: {trade.Security.CUSIP}</h6>
-                        <h6>MaturityDate: {trade.Security.MaturityDate}</h6>
+                        <h6>MaturityDate: {trade.Security.MaturityDate.slice(0,10)}</h6>
                     </div>
                     <div className='columnb' style={{width: "50%", paddingLeft: "5px"}}>
                         <h5>Status: <span style={{fontSize: "1rem"}}><span class="material-symbols-outlined" style={{color: trade.Security.Status == "Active" ? "#A68210" : 

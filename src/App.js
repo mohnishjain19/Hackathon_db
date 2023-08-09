@@ -9,7 +9,7 @@ function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState(false);
-  const [isManager, setIsManager] = useState(false)
+  const [isManager, setIsManager] = useState(true)
   const [name, setName] = useState("")
 
   const changeEmail = (event) => {

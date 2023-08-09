@@ -27,9 +27,24 @@ const Signin = (props) => {
       console.log(json[i])
       if (props.email == json[i].Email){
         if (props.password == "asdf@1234"){
-          if (json[i].Role == "Manager"){
-            props.changeIsManager(true);
-          }
+          props.changeIsManager(false);
+          props.changeId(json[i].id)
+          props.changeName(json[i].Name)
+          props.changeLogin(true);
+          navigate("/home");
+          return
+        }
+      }
+    }
+    var request = new XMLHttpRequest();
+    request.open("GET", "http://16.171.26.117:8000/api/v1/managers" , false);
+    request.send();
+    var json = JSON.parse(request.responseText);
+    for(let i = 0; i < json.length; i++){
+      console.log(json[i])
+      if (props.email == json[i].Email){
+        if (props.password == "asdf@1234"){
+          props.changeIsManager(true);
           props.changeId(json[i].id)
           props.changeName(json[i].Name)
           props.changeLogin(true);
