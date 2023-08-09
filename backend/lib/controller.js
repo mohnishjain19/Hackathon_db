@@ -83,10 +83,18 @@ exports.userSpecificBooks = async (req, res, next) => {
         
         catch(err) {
             res.status(400).json({
-                error: `Invalid User Id ${UserId}`
+                error: `Invalid User Id ${UserId}: Error: ${err}`
             });
             return; 
         }
+
+        if (typeof UserId !== "number"){
+            res.status(400).json({
+                error: `Invalid User Id ${UserId}`
+            });
+            return;
+        }
+
         //Find all the bookUserInstances where the user is present 
         const bookUserInstances = await sequelize.models.BookUser.findAll(
             {
