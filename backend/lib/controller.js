@@ -310,7 +310,7 @@ exports.tradesByBooksid = async (req, res, next) => {
 
 }
 
-async function accountingFlags(){
+async function getAccountingFlags(){
 
     //For 
     const trades = await sequelize.models.Trade.findAll({
@@ -349,7 +349,7 @@ async function accountingFlags(){
     return trades; 
 }
 
-async function complianceFlags(){
+async function getComplianceFlags(){
 
     //For maturity date > settlement date 
     //These are compliance flags, which mean the bond is incorrect 
@@ -381,7 +381,7 @@ async function complianceFlags(){
 
 exports.accountingFlags = async (req, res, next) => {
     try {
-        const trades = await accountingFlags();
+        const trades = await getAccountingFlags();
         res.json(trades);
     }
     catch (err) {
@@ -392,7 +392,7 @@ exports.accountingFlags = async (req, res, next) => {
 
 exports.complianceFlags = async (req, res, next) =>{
     try {
-        const trades = await complianceFlags();
+        const trades = await getComplianceFlags();
         res.json(trades);
     }
     catch (err){
@@ -412,30 +412,30 @@ exports.redFlags = async (req, res, next) => {
 
         let bookid = req.body.bookid;
 
-        let complianceFlags = await complianceFlags();
-        let accountingFlags = await accountingFlags();
+        let complianceItems = await getComplianceFlags();
+        let accountingItems = await getAccountingFlags();
 
         //Check for instances in accounting flags that have occured in complianceFlags and filter them out 
-        const complianceIds = complianceFlags.map((x) => x.id);
-        accountingFlags = accountingFlags.filter((x) => !complianceIds.includes(x.id));
+        const complianceIds = complianceItems.map((x) => x.id);
+        accountingItems = accountingItems.filter((x) => !complianceIds.includes(x.id));
 
         //Combine both arrays with an additional field flag_type 
         //Flag type is either accounting or compliance
-        complianceFlags = complianceFlags.map((x) => {
+        complianceItems = complianceItems.map((x) => {
             return {
                 ...x.dataValues,
                 flag_type : "compliance"
             }
         });
 
-        accountingFlags = accountingFlags.map((x) => {
+        accountingItems = accountingItems.map((x) => {
             return {
                 ...x.dataValues,
                 flag_type : "accounting"
             }
         });
 
-        let trades = complianceFlags.concat(accountingFlags);
+        let trades = complianceItems.concat(accountingItems);
 
         if (bookid == null || bookid == undefined || bookid == "" ) {
         }
