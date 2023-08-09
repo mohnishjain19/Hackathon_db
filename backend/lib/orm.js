@@ -166,12 +166,13 @@ const Trade = {
     },
 };
 
-const db_name = "db_hackathon";
-const db_username = "aniruddh";
-const db_password = "polo-sheath-battery-golf-cheek";
-const db_host = "db-1.clq6r5hpitgr.eu-north-1.rds.amazonaws.com";
-const db_port = 3306;
-const db_dialect = "mysql";
+const db_name = process.env.DB_NAME;
+const db_username = process.env.DB_USERNAME;
+const db_password = process.env.DB_PASSWORD;
+const db_host = process.env.DB_HOST;
+let db_port = process.env.DB_PORT;
+db_port = parseInt(db_port);
+const db_dialect = process.env.DB_DIALECT;
 const db_dialectOptions = {
     ssl: 'Amazon RDS'
 };

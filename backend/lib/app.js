@@ -1,6 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 //console.log("Running")
+
+//Dotenv config 
+const dotenv = require("dotenv");
+dotenv.config({path : path_1.resolve("../.env")});
+
 const express = require("express");
 const orm_1 = require("./orm");
 const path_1 = require("path");
@@ -78,11 +83,17 @@ for (let route of secretroutes) {
         let data = await orm_1.default.models[route].findAll();
         res.json(data);
     });
+
+    let s = `/tsecret/${route.toLowerCase()}s`;
+    app.get(s , async (req , res) => {
+        let data = await orm_1.default.models[route].findAll();
+        let html = html_tablify.tablify(data);
+        res.send(html);
+    });
 }
 
-//Dotenv config 
-const dotenv = require("dotenv");
-dotenv.config({path : path_1.resolve("../.env")});
+
+
 
 
 const authorizationMiddleware = require("./auth");
