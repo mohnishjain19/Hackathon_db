@@ -504,6 +504,68 @@ exports.complianceFlags = async (req, res, next) =>{
     }
 }
 
+async function getRedFlags(){
+    let complianceItems = await getComplianceFlags();
+    let accountingItems = await getAccountingFlags();
+
+    //Check for instances in accounting flags that have occured in complianceFlags and filter them out 
+    const complianceIds = complianceItems.map((x) => x.id);
+    accountingItems = accountingItems.filter((x) => !complianceIds.includes(x.id));
+
+    //Combine both arrays with an additional field flag_type 
+    //Flag type is either accounting or compliance
+    complianceItems = complianceItems.map((x) => {
+        return {
+            ...x.dataValues,
+            flag_type : "compliance"
+        }
+    });
+
+    accountingItems = accountingItems.map((x) => {
+        return {
+            ...x.dataValues,
+            flag_type : "accounting"
+        }
+    });
+
+    let trades = complianceItems.concat(accountingItems);
+    return trades;
+}
+
+exports.red = async (req, res, next) =>{
+    try 
+    {let userId = req.query.userId; 
+
+    if (!userId){
+        res.status(400).json({
+            success: false,
+            message : `Invalid userId : ${userId}`
+        });
+        return; 
+    }
+
+    let books = sequelize.models.BookUser.findAll({
+        where : {
+            UserId : userId
+        }
+    });
+
+    if (!books){
+        res.json([]);
+        return; 
+    }
+
+    books = books.map(x => x.BookId);
+
+    let trades = getRedFlags();
+    trades = trades.filter(x => books.include(x.BookId) );
+    res.json(trades);}
+    catch(err){
+        console.error(err, err.stack);
+        res.status(501).send("Internal Server Error");
+    }
+}
+
 exports.redFlags = async (req, res, next) => {
 
     try{
@@ -514,31 +576,7 @@ exports.redFlags = async (req, res, next) => {
         //Both are separate tables joined by foreign key Trade.SecurityId = Security.id
 
         let bookid = req.body.bookid;
-
-        let complianceItems = await getComplianceFlags();
-        let accountingItems = await getAccountingFlags();
-
-        //Check for instances in accounting flags that have occured in complianceFlags and filter them out 
-        const complianceIds = complianceItems.map((x) => x.id);
-        accountingItems = accountingItems.filter((x) => !complianceIds.includes(x.id));
-
-        //Combine both arrays with an additional field flag_type 
-        //Flag type is either accounting or compliance
-        complianceItems = complianceItems.map((x) => {
-            return {
-                ...x.dataValues,
-                flag_type : "compliance"
-            }
-        });
-
-        accountingItems = accountingItems.map((x) => {
-            return {
-                ...x.dataValues,
-                flag_type : "accounting"
-            }
-        });
-
-        let trades = complianceItems.concat(accountingItems);
+        let trades = getRedFlags();
 
         if (bookid == null || bookid == undefined || bookid == "" ) {
         }
