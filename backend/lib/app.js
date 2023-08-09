@@ -3,12 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //console.log("Running")
 
 //Dotenv config 
-const dotenv = require("dotenv");
+require('dotenv').config({ path: require('find-config')('.env') })
 const path_1 = require("path");
 
-// Get directory of the current script 
-let dir = path_1.dirname(__filename);
-dotenv.config({path : path_1.resolve(dir + "../.env")});
 
 const express = require("express");
 const orm_1 = require("./orm");
