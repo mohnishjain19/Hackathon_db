@@ -125,7 +125,7 @@ router.route("/accountingFlags").get(accountingFlags);
 app.use("/api/v1", router);
 
 
-const port = process.env.PORT || 8000;
+const port = parseInt(process.env.PORT) || 8000;
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
