@@ -102,7 +102,8 @@ const controller = require("./controller");
 
 const {
     allusers , allmanagers , register , userSpecificBooks , deleteuser , allbooks, settledTrades , 
-    tradesByBooks , tradesByBooksid , preMaturity , postMaturity, redFlags, complianceFlags, accountingFlags
+    tradesByBooks , tradesByBooksid , preMaturity , postMaturity, redFlags, complianceFlags, accountingFlags,
+    addBookUser
 } = require("./controller");
 
 const manager_only = authorizationMiddleware.authorizeRoles(["Manager"]);
@@ -121,6 +122,7 @@ router.route("/postMaturity").get(postMaturity);
 router.route("/redFlags").get(redFlags);
 router.route("/complianceFlags").get(complianceFlags);
 router.route("/accountingFlags").get(accountingFlags);
+router.route("/addbookuser").post(addBookUser);
 
 app.use("/api/v1", router);
 
