@@ -99,7 +99,7 @@ exports.userSpecificBooks = async (req, res, next) => {
         const bookUserInstances = await sequelize.models.BookUser.findAll(
             {
                 where: {
-                    UserId: UserId
+                    UserId: UserId || -1
                 }
         });
 
