@@ -74,7 +74,7 @@ exports.userSpecificBooks = async (req, res, next) => {
     
     
     try {
-        
+
         let UserId = req.query.id;
 
         try  {
@@ -83,7 +83,7 @@ exports.userSpecificBooks = async (req, res, next) => {
         
         catch(err) {
             res.status(400).json({
-                error: `Invalid User Id ${UserId}: type : ${typeof UserId}, err: ${err}`
+                error: `Invalid User Id ${UserId}`
             });
             return; 
         }
