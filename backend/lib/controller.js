@@ -544,7 +544,7 @@ exports.red = async (req, res, next) =>{
         return; 
     }
 
-    let books = sequelize.models.BookUser.findAll({
+    let books = await sequelize.models.BookUser.findAll({
         where : {
             UserId : userId
         }
