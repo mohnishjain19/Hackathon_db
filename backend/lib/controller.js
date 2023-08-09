@@ -558,7 +558,7 @@ exports.red = async (req, res, next) =>{
     books = books.map(x => x.BookId);
 
     let trades = await getRedFlags();
-    trades = trades.filter(x => books.include(x.BookId) );
+    trades = trades.filter(x => books.includes(x.BookId) );
     res.json(trades);}
     catch(err){
         console.error(err, err.stack);
