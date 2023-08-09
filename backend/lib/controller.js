@@ -74,7 +74,8 @@ exports.userSpecificBooks = async (req, res, next) => {
     
     
     try {
-        const UserId = req.query.id;
+        
+        let UserId = req.query.id;
 
         try  {
             UserId = parseInt(UserId);
